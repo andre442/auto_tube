@@ -2,33 +2,33 @@ import argparse
 import os
 import time
 import numpy as np
-from PIL import Image, ImageDraw, ImageFont
-from moviepy.editor import VideoFileClip, concatenate_videoclips, AudioFileClip, ImageClip, CompositeVideoClip, CompositeAudioClip, VideoClip, TextClip, concatenate_videoclips
+# from PIL import Image, ImageDraw, ImageFont
+from moviepy.editor import VideoFileClip, concatenate_videoclips, AudioFileClip, ImageClip, CompositeVideoClip, CompositeAudioClip, VideoClip, TextClip
 import asyncio
 import edge_tts
-import srt
-from datetime import timedelta
+# import srt
+# from datetime import timedelta
 from ollama import Client
 import re
 import json
-import shutil
-from pathlib import Path
+# import shutil
+# from pathlib import Path
 import requests
-import subprocess
+# import subprocess
 from moviepy.editor import concatenate_audioclips
 import math
 import random
-from moviepy.video.fx.all import resize
-import moviepy.video.fx.all as vfx
+# from moviepy.video.fx.all import resize
+# import moviepy.video.fx.all as vfx
 import cv2
 import datetime
-import traceback
+# import traceback
 import whisper
-from moviepy.video.tools.subtitles import SubtitlesClip
+# from moviepy.video.tools.subtitles import SubtitlesClip
 from typing import Optional, Dict, List
 from moviepy.config import change_settings
 from glob import glob
-from collections import Counter
+# from collections import Counter
 # import nest_asyncio
 # nest_asyncio.apply()
 change_settings({"IMAGEMAGICK_BINARY": r"C:\\Program Files\\ImageMagick-7.1.1-Q16-HDRI\\magick.exe"})
@@ -104,7 +104,7 @@ async def generate_image(prompt, filename, negative_prompt="", data_dir="data"):
         # Define o modelo a ser usado
         sd_model = "realisticVisionV60B1_v51HyperVAE"
         
-        # Prompt base melhorado com ênfase em conteúdo adequado para TikTok
+        # Prompt base melhorado com ênfase em anatomia correta
         safe_style = (
             "suitable for social media, family friendly, PG content, "
             "modest clothing, fully clothed, appropriate attire, "
@@ -116,32 +116,37 @@ async def generate_image(prompt, filename, negative_prompt="", data_dir="data"):
             "masterpiece, best quality, highly detailed, realistic anatomy, "
             "perfect hands, accurate facial features, precise body proportions, "
             "cinematic lighting, dramatic composition, high production value, "
-            "viral worthy, social media ready, sharp focus, 8k uhd"
+            "viral worthy, social media ready, sharp focus, 8k uhd, "
+            "anatomically correct hands, proper anatomy, correct fingers, "  # Ênfase adicional em anatomia correta
+            "natural body proportions, coherent composition"
         )
         
         enhanced_prompt = f"{prompt}, {safe_style}, {quality_style}"
         
-        # Negative prompt otimizado para conteúdo seguro
+        # Negative prompt significativamente melhorado para anatomia
         base_negative = negative_prompt if negative_prompt else ""
         
         safety_negative = """
             (nsfw:1.5), (nudity:1.5), (naked:1.5), (nude:1.5), (explicit:1.5),
             (suggestive:1.4), (revealing clothes:1.4), (lingerie:1.4),
-            (inappropriate:1.5), (sexual:1.5), (adult content:1.5),
-            (underwear:1.4), (bikini:1.3), (swimsuit:1.3),
-            (cleavage:1.4), (beach wear:1.3)
+            (inappropriate:1.5), (sexual:1.5), (adult content:1.5)
         """
         
+        # Negative prompt anatômico reforçado com pesos mais altos
         anatomical_negative = """
-            (deformed:1.3), (distorted:1.3), (disfigured:1.3),
-            (bad anatomy:1.4), (wrong anatomy:1.4), (extra limbs:1.4),
-            (missing limbs:1.4), (floating limbs:1.4), (disconnected limbs:1.4),
-            (malformed hands:1.4), (extra fingers:1.4), (missing fingers:1.4),
-            (fused fingers:1.4), (too many fingers:1.4), (mutated hands:1.4),
-            (bad hands:1.4), (poorly drawn hands:1.4),
-            (malformed face:1.4), (poorly drawn face:1.4),
-            (bad proportions:1.4), (gross proportions:1.4),
-            (mutation:1.3), (mutated:1.3)
+            (deformed:1.8), (distorted:1.8), (disfigured:1.8),
+            (bad anatomy:1.9), (wrong anatomy:1.9), (extra limbs:2.0),
+            (missing limbs:1.9), (floating limbs:1.9), (disconnected limbs:1.9),
+            (malformed hands:2.0), (extra fingers:2.0), (missing fingers:2.0),
+            (fused fingers:2.0), (too many fingers:2.0), (mutated hands:2.0),
+            (bad hands:2.0), (poorly drawn hands:2.0), (extra hands:2.0),
+            (malformed face:1.9), (poorly drawn face:1.9),
+            (bad proportions:1.9), (gross proportions:1.9),
+            (mutation:1.8), (mutated:1.8),
+            (extra arms:2.0), (extra legs:2.0), (duplicate body parts:2.0),
+            (multiple heads:2.0), (extra body parts:2.0),
+            (twisted fingers:1.9), (double hands:2.0),
+            (asymmetric body:1.8), (unnatural pose:1.7)
         """
         
         quality_negative = """
@@ -207,7 +212,7 @@ async def generate_image(prompt, filename, negative_prompt="", data_dir="data"):
             enhancers = [
                 ('Sharpness', 1.2),
                 ('Contrast', 1.1),
-                ('Color', 0.95),
+                ('Color', 0.75),
                 ('Brightness', 1.05)
             ]
             
@@ -239,7 +244,7 @@ def create_smooth_zoom(clip, zoom_direction='in', zoom_factor=0.08):
     duration = clip.duration
     
     # Criar matriz de transformação base
-    center_matrix = np.float32([[1, 0, 0], [0, 1, 0]])
+    # center_matrix = np.float32([[1, 0, 0], [0, 1, 0]])
     
     def get_frame(t):
         # Calcular progresso com suavização gaussiana
